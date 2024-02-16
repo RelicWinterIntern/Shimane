@@ -27,6 +27,13 @@
                                 <p class="text-gray-600">{{ $post->user->name }}</p>
                                 <p class="text-gray-600">{{ $post->updated_at }}</p>
                             </div>
+                            <div>
+                                @if($post->is_liked_by_auth_user())
+                                    <a href="{{ route('unlike', ['post_id' => $post->id]) }}" class="btn btn-success btn-sm">いいね<span class="badge">{{ $post->like_count() }}</span></a>
+                                @else
+                                    <a href="{{ route('like', ['post_id' => $post->id]) }}" class="btn btn-secondary btn-sm">いいね<span class="badge">{{ $post->like_count() }}</span></a>
+                                @endif
+                            </div>
                         </li>
                     @endforeach
                 </ul>
