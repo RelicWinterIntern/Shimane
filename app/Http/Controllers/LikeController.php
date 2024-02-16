@@ -8,16 +8,17 @@ use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
-    public function like(Request $request) {
-        $validatedData = $request->validate([
-            'post_id' => 'required',
-        ]);
-
+    public function like($post_id) {
         $like = new Like();
         $like->user_id = Auth::id();
-        $like->post_id = $validatedData['post_id'];
+        $like->post_id = $post_id;
         $like->save();
 
         return redirect()->route('post.index')->with('success', '投稿にいいねしました');
+    }
+
+    public function unlike($post_id) {
+        Like::where('post_id',$post_id)->first()->delete();
+        return redirect()->route('post.index')->with('success', 'いいねを取り消しました');
     }
 }

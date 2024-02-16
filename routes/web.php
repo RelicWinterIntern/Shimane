@@ -39,7 +39,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/myposts', [PostController::class, 'myPosts'])->name('myposts');
 
-    Route::post('/like', [LikeController::class, 'like'])->name('like');
+    Route::get('/like/{post_id}', [LikeController::class, 'like'])->name('like');
+    Route::get('/unlike/{post_id}', [LikeController::class, 'unlike'])->name('unlike');
 });
 
 require __DIR__.'/auth.php';
