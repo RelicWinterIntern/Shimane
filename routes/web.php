@@ -3,6 +3,7 @@
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CoordinateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,7 +43,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/like/create', [LikeController::class, 'create'])->name('like.create');
     Route::get('/post/like/{id}', [PostController::class, 'like'])->name('post.like');
     Route::get('/post/unlike/{id}', [PostController::class, 'unlike'])->name('post.unlike');
+    
+    Route::get('/test', function() {
+        return view("test");
+    });
 
+    Route::post('/coordinate', [CoordinateController::class, 'coordinate'])->name('coordinate');
 });
 
 require __DIR__.'/auth.php';

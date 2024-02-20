@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function index()
-    {
+    public function index(Request $request)
+    {   
         $posts = Post::orderBy('updated_at', 'desc')->get();
         return view('post.index', compact('posts'));
     }
