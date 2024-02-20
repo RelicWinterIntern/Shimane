@@ -22,14 +22,17 @@ class Post extends Model
     public function is_liked_by_auth_user()
     {
         $user_id = Auth::id();
-
-        foreach ($this->likes as $like) {
-            if ($like->user_id == $user_id) {
-                return true;
-            }
+        
+        $likers = array();
+        foreach($this->likes as $like) {
+            array_push($likers, $like->user_id);
         }
 
-        return false;
+        if (in_array($user_id, $likers)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function like_count() {

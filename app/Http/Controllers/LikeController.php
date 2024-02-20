@@ -18,7 +18,9 @@ class LikeController extends Controller
     }
 
     public function unlike($post_id) {
-        Like::where('post_id',$post_id)->first()->delete();
+        $user_id = Auth::id();
+
+        Like::where('post_id',$post_id)->where('user_id',$user_id)->first()->delete();
         return redirect()->route('post.index')->with('success', 'いいねを取り消しました');
     }
 }
