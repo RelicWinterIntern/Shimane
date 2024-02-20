@@ -19,7 +19,9 @@
                         <h4 class="text-lg font-bold">{{ $post->title }}</h4>
                         <p class="text-gray-800">{{ $post->body }}</p>
                         <p class="text-gray-800">{{ $post->updated_at }}</p>
-
+                        @if ($post->image)
+                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
+                        @endif
                         <div class="mt-4 flex">
                             <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="btn btn-primary mr-2"
                                 role="button">
