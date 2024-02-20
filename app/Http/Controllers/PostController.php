@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -68,6 +69,34 @@ class PostController extends Controller
         $post->delete();
 
         return redirect()->route('myposts')->with('success', '投稿が削除されました');
+    }
+
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified'])->only(['like', 'unlike']);
+    }
+
+    public function like($id)
+    {
+        Like::create([
+        'post_id' => $id,
+        'user_id' => Auth::id(),
+        ]);
+
+        session()->flash('success', '投稿にいいねされました');
+
+        return redirect()->back();
+    }
+
+    
+    public function unlike($id)
+    {
+        $like = Like::where('post_id', $id)->where('user_id', Auth::id())->first();
+        $like->delete();
+
+        session()->flash('success', '投稿にいいねが消されました');
+
+        return redirect()->back();
     }
 }
 
