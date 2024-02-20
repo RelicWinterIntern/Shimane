@@ -9,7 +9,7 @@ class CoordinateController extends Controller
     //
     public function coordinate(Request $request)
     {
-        dd($request->data);
-        return response()->json(['success' => true]);
+        $positionData = $request->input();
+        echo response()->json(['success' => true, 'data' => $positionData["coords"]]);
     }
 }
