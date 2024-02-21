@@ -47,7 +47,7 @@
 
                     <div class="mb-4">
                         <label for="body" class="block text-gray-700 text-sm font-bold mb-2">引用元本文</label>
-                        <textarea name="original_body" id="original_body" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required style="color:#666666;">{{ $original_post->body }}</textarea>    
+                        <textarea name="original_body" id="original_body" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required style="color:#666666;" readonly>{{ $original_post->body }}</textarea>    
                     </div>
 
                     <div class="mb-4">
