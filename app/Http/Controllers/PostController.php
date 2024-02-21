@@ -12,6 +12,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::orderBy('updated_at', 'desc')->get();
+        $posts = Post::get();
         return view('post.index', compact('posts'));
     }
 
@@ -103,4 +104,3 @@ class PostController extends Controller
         return redirect()->back();
     }
 }
-
