@@ -17,7 +17,7 @@
                 @foreach ($posts as $post)
                     <div class="bg-white shadow p-6 rounded-lg">
                         <h4 class="text-lg font-bold">{{ $post->title }}</h4>
-                        <p class="text-gray-800">{{ $post->body }}</p>
+                        <p class="text-gray-1000 mt-4">{!! nl2br($post->makeLink(e($post->body))) !!}</p>
                         <p class="text-gray-800">{{ $post->updated_at }}</p>
                         @if ($post->image)
                             <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
