@@ -68,10 +68,31 @@
                             @if ($post->image)
                                 <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" width="300px">
                             @endif
+
+                            @if($post->getRefer())
+                            <div class="mb-6 bg-white border rounded-lg p-4">
+                                @php 
+                                $refer = $post->getRefer();
+                                @endphp
+                                <h3 class="text-lg font-bold mb-2 border-bottom">{{ $refer->title }}</h3>
+                                <p class="text-gray-1000 mt-4">{!! nl2br($post->makeLink(e($refer->body))) !!}</p>
+                                @if ($refer->image)
+                                    <img src="{{ asset('storage/' . $refer->image) }}" alt="{{ $refer->title }}" width="300px">
+                                @endif
+                                <div class="flex justify-between mt-8">
+                                    <p class="text-gray-600">
+                                        {{ $refer->user->name }}
+                                    </p>
+                                    <p class="text-gray-600">いいね {{ $refer->likes->count() }}</p>
+                                    <p class="text-gray-600">{{ $refer->updated_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
+                            @endif
+
                             <div class="flex justify-between mt-8">
                                 <p class="text-gray-600">
                                     {{ $post->user->name }}
-                                    @if ($post->distance) 
+                                    @if ($post->distance)
                                         ({{ floor($post->distance * 10) / 10 }} km)
                                     @endif
                                 </p>
@@ -83,6 +104,9 @@
                                         <a href="{{ route('post.like', ['id' => $post->id]) }}" class="btn btn-secondary btn-sm">いいね<span class="badge">{{ $post->likes->count() }}</span></a>
                                     @endif
                                 </div>
+                                <a href="{{ route('post.create', $post->id) }}" class="inline-block py-2 px-4 btn btn-primary text-decoration-none float-end">
+                                    {{ __('再投稿する') }}
+                                </a>
                             </div>
                         </li>
                     @endforeach

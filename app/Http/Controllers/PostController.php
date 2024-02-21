@@ -37,9 +37,14 @@ class PostController extends Controller
         return redirect()->route('post.index')->with(compact('posts', 'isNear'));
     }
 
-    public function create()
-    {
-        return view('post.create');
+    public function create($id=null)
+    {  
+        if (is_null($id)) {
+            return view('post.create');
+        } else {
+            $original_post = Post::findOrFail($id);
+            return view('post.create', compact('original_post'));
+        }
     }
 
     public function store(Request $request)
@@ -52,6 +57,10 @@ class PostController extends Controller
         ]);
 
         $post = new Post();
+
+        if ($request->refer) {
+            $post->refer = $request->refer;
+        }
         $post->title = $validatedData['title'];
         $post->body = $validatedData['body'];
         if ($request->hasFile('image')) {
