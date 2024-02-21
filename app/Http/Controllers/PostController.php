@@ -11,7 +11,7 @@ use DB;
 class PostController extends Controller
 {
     public function index(Request $request)
-    {   
+    {
         $posts = Post::orderBy('updated_at', 'desc')->get();
         $isNear = false;
         return view('post.index', compact('posts', 'isNear'));
@@ -19,17 +19,17 @@ class PostController extends Controller
 
     // https://qiita.com/takedomin/items/12e206d2a2ba285cee7c
     public function near(Request $request)
-    {   
+    {
         $validatedData = $request->validate([
             'latitude' => 'required',
             'longitude' => 'required',
         ]);
         $latitude = $validatedData['latitude'];
         $longitude = $validatedData['longitude'];
-        $posts = Post::select('*', 
-        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
+        $posts = Post::select('*',
+        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.'))
                 + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) as distance'))
-                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
+                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.'))
                 + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) < 50')
                 ->orderBy('updated_at', 'desc')
                 ->get();
@@ -54,9 +54,24 @@ class PostController extends Controller
         $post = new Post();
         $post->title = $validatedData['title'];
         $post->body = $validatedData['body'];
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
-            $post->image = $imagePath;
+            // フォームでリクエストされた画像を取得
+            $img = $request->file('image');
+
+            // アップロードされたファイル名を取得
+            $file_name = $request->file('image')->getClientOriginalName();
+
+            // storage > public > img 配下に画像が一時的に保存される
+            $dir = 'img';
+            $img->storeAs('/' . $dir, $file_name);
+            $imgPath = '/' . $dir . '/' . $file_name;
+
+            // store処理が実行できたらDBに保存処理を実行
+            if ($imgPath) {
+                // DBにPathを登録する処理
+                $post->image = $imagePath;
+            }
         }
         $post->user_id = Auth::id();
         $post->latitude = $validatedData['latitude'];
@@ -118,7 +133,7 @@ class PostController extends Controller
         return redirect()->back();
     }
 
-    
+
     public function unlike($id)
     {
         $like = Like::where('post_id', $id)->where('user_id', Auth::id())->first();
