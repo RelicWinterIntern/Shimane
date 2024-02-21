@@ -92,6 +92,7 @@
                             <div class="flex justify-between mt-8">
                                 <p class="text-gray-600">
                                     {{ $post->user->name }}
+                                    
                                     @if ($post->distance)
                                         ({{ floor($post->distance * 10) / 10 }} km)
                                     @endif

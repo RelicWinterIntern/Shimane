@@ -12,9 +12,15 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {   
-        $posts = Post::orderBy('updated_at', 'desc')->get();
-        $isNear = false;
-        return view('post.index', compact('posts', 'isNear'));
+        if (session()->has('posts')) {
+            $posts = session('posts');
+            $isNear = true;
+            return view('post.index', compact('posts', 'isNear'));
+        } else {
+            $posts = Post::orderBy('updated_at', 'desc')->get();
+            $isNear = false;
+            return view('post.index', compact('posts', 'isNear'));
+        }
     }
 
     // https://qiita.com/takedomin/items/12e206d2a2ba285cee7c
@@ -34,7 +40,7 @@ class PostController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->get();
         $isNear = true;
-        return redirect()->route('post.index')->with(compact('posts', 'isNear'));
+        return redirect()->route('post.index')->with('posts', $posts);
     }
 
     public function create($id=null)
