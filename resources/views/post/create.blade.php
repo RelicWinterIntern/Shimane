@@ -41,13 +41,8 @@
                     <div class="mb-4">
                         <div class="mb-4">
                             <label for="title" class="block text-gray-700 text-sm font-bold mb-2">タイトル</label>
-                            <input type="text" name="title" id="title" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required value="引用 {{ $original_post->title }}">
+                            <input type="text" name="title" id="title" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required placeholder="「{{ $original_post->title }}」を引用">
                         </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="body" class="block text-gray-700 text-sm font-bold mb-2">引用元本文</label>
-                        <textarea name="original_body" id="original_body" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required style="color:#666666;" readonly>{{ $original_post->body }}</textarea>    
                     </div>
 
                     <div class="mb-4">
@@ -60,6 +55,7 @@
                         <input type="file" name="image">
                     </div>
 
+                    <input type="hidden" id="refer" name="refer" value="{{ $original_post->id }}">
                     <input type="hidden" id="latitude" name="latitude">
                     <input type="hidden" id="longitude" name="longitude">
                     <div class="flex justify-end">

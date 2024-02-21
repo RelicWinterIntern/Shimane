@@ -59,13 +59,11 @@ class PostController extends Controller
 
         $post = new Post();
 
-        if ($request->original_body) {
-            $post->body =  $validatedData['body'] . "\n-----------------------\n" . $request->original_body . "\n-----------------------\n";
-        } else {
-            $post->body = $validatedData['body'];
+        if ($request->refer) {
+            $post->refer = $request->refer;
         }
         $post->title = $validatedData['title'];
-        
+        $post->body = $validatedData['body'];
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images', 'public');
             $post->image = $imagePath;
