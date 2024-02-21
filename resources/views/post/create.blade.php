@@ -64,16 +64,19 @@
                     </div>
                     @else
                     <div class="mb-4">
-                        <label for="title" class="block text-gray-700 text-sm font-bold mb-2">タイトル</label>
-                        <input type="text" name="title" id="title" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required>
+                        <label for="title" class="block text-gray-700 text-sm font-bold mb-2 text-danger">タイトル</label>
+                        <input type="text" placeholder="話の題名" name="title" id="title" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required>
                     </div>
                     <div class="mb-4">
-                        <label for="body" class="block text-gray-700 text-sm font-bold mb-2">本文</label>
-                        <textarea name="body" id="body" rows="6" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required></textarea>
+                        <label for="body" class="block text-gray-700 text-sm font-bold mb-2 text-danger">本文</label>
+                        <textarea name="body" placeholder="最近の出来事を呟こう" id="body" rows="6" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required></textarea>
                     </div>
                     <div class="mb-4">
                         <label for="image" class="block text-gray-700 text-sm font-bold mb-2">画像</label>
                         <input type="file" name="image">
+                    </div>
+                    <div class="mb-4">
+                    <label for="title" class="block text-gray-700 text-sm font-bold mb-2 text-danger">入力必須</label>
                     </div>
                     <input type="hidden" id="latitude" name="latitude">
                     <input type="hidden" id="longitude" name="longitude">
