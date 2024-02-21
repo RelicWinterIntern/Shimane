@@ -34,12 +34,17 @@ class PostController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->get();
         $isNear = true;
-        return view('post.index', compact('posts', 'isNear'));
+        return redirect()->route('post.index')->with(compact('posts', 'isNear'));
     }
 
-    public function create()
-    {
-        return view('post.create');
+    public function create($id=null)
+    {  
+        if (is_null($id)) {
+            return view('post.create');
+        } else {
+            $original_post = Post::findOrFail($id);
+            return view('post.create', compact('original_post'));
+        }
     }
 
     public function store(Request $request)
@@ -52,8 +57,14 @@ class PostController extends Controller
         ]);
 
         $post = new Post();
+
+        if ($request->original_body) {
+            $post->body =  $validatedData['body'] . "\n-----------------------\n" . $request->original_body . "\n-----------------------\n";
+        } else {
+            $post->body = $validatedData['body'];
+        }
         $post->title = $validatedData['title'];
-        $post->body = $validatedData['body'];
+        
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images', 'public');
             $post->image = $imagePath;

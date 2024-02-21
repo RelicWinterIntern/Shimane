@@ -71,7 +71,7 @@
                             <div class="flex justify-between mt-8">
                                 <p class="text-gray-600">
                                     {{ $post->user->name }}
-                                    @if ($post->distance) 
+                                    @if ($post->distance)
                                         ({{ floor($post->distance * 10) / 10 }} km)
                                     @endif
                                 </p>
@@ -83,6 +83,9 @@
                                         <a href="{{ route('post.like', ['id' => $post->id]) }}" class="btn btn-secondary btn-sm">いいね<span class="badge">{{ $post->likes->count() }}</span></a>
                                     @endif
                                 </div>
+                                <a href="{{ route('post.create', $post->id) }}" class="inline-block py-2 px-4 btn btn-primary text-decoration-none float-end">
+                                    {{ __('再投稿する') }}
+                                </a>
                             </div>
                         </li>
                     @endforeach
