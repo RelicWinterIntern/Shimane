@@ -1,9 +1,41 @@
+<script>
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function showPosition(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+
+        // フォームのhidden input要素に位置情報を設定する
+        document.getElementById('latitude').value = latitude;
+        document.getElementById('longitude').value = longitude;
+
+        // フォームを送信する
+        document.getElementById('myForm').submit();
+    }
+</script>
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('投稿一覧') }}
+            @if($isNear)
+                {{ __('近くの投稿一覧') }}
+            @else
+                {{ __('投稿一覧') }}
+            @endif
         </h2>
     </x-slot>
+
+    <form id="myForm" action="{{ route('post.near') }}" method="post">
+        @csrf
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+    </form>
 
     <div class="max-w-7xl mx-auto mt-10 px-4 sm:px-6 lg:px-8">
         <div class="my-4">
@@ -14,6 +46,16 @@
             <a href="{{ route('myposts') }}" class="inline-block ml-4 py-2 px-4 btn btn-secondary text-decoration-none">
                 {{ __('自分の投稿を確認する') }}
             </a>
+
+            @if($isNear)
+                <a href="{{ route('post.index') }}" class="inline-block py-2 px-4 btn btn-secondary text-decoration-none">
+                    {{ __('全ての投稿を確認する') }}
+                </a>
+            @else
+                <a href="javascript:void(0);" onclick="getLocation();" class="inline-block py-2 px-4 btn btn-secondary text-decoration-none">
+                    {{ __('近くの投稿を確認する') }}
+                </a>
+            @endif
         </div>
 
         <div class="my-4">
@@ -22,12 +64,18 @@
                     @foreach ($posts as $post)
                         <li class="mb-6 bg-white border rounded-lg p-4">
                             <h3 class="text-lg font-bold mb-2 border-bottom">{{ $post->title }}</h3>
+
                             <p class="text-gray-1000 mt-4">{{ $post->body }}</p>
                             @if ($post->image)
                                 <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
                             @endif
                             <div class="flex justify-between mt-8">
-                                <p class="text-gray-600">{{ $post->user->name }}</p>
+                                <p class="text-gray-600">
+                                    {{ $post->user->name }}
+                                    @if ($post->distance) 
+                                        ({{ floor($post->distance * 10) / 10 }} km)
+                                    @endif
+                                </p>
                                 <p class="text-gray-600">{{ $post->updated_at }}</p>
                                 <div>
                                     @if($post->is_liked_by_auth_user())

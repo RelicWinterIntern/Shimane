@@ -6,13 +6,35 @@ use App\Models\Post;
 use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class PostController extends Controller
 {
     public function index(Request $request)
     {   
         $posts = Post::orderBy('updated_at', 'desc')->get();
-        return view('post.index', compact('posts'));
+        $isNear = false;
+        return view('post.index', compact('posts', 'isNear'));
+    }
+
+    // https://qiita.com/takedomin/items/12e206d2a2ba285cee7c
+    public function near(Request $request)
+    {   
+        $validatedData = $request->validate([
+            'latitude' => 'required',
+            'longitude' => 'required',
+        ]);
+        $latitude = $validatedData['latitude'];
+        $longitude = $validatedData['longitude'];
+        $posts = Post::select('*', 
+        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
+                + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) as distance'))
+                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
+                + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) < 50')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        $isNear = true;
+        return view('post.index', compact('posts', 'isNear'));
     }
 
     public function create()
@@ -25,6 +47,8 @@ class PostController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string',
+            'latitude' => 'required',
+            'longitude' => 'required',
         ]);
 
         $post = new Post();
@@ -35,6 +59,8 @@ class PostController extends Controller
             $post->image = $imagePath;
         }
         $post->user_id = Auth::id();
+        $post->latitude = $validatedData['latitude'];
+        $post->longitude = $validatedData['longitude'];
         $post->save();
 
         return redirect()->route('post.index')->with('success', '投稿が作成されました');

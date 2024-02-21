@@ -43,6 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/like/create', [LikeController::class, 'create'])->name('like.create');
     Route::get('/post/like/{id}', [PostController::class, 'like'])->name('post.like');
     Route::get('/post/unlike/{id}', [PostController::class, 'unlike'])->name('post.unlike');
+
+    Route::post('/post/near', [PostController::class, 'near'])->name('post.near');
 });
 
 
