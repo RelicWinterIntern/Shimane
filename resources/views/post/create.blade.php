@@ -1,3 +1,30 @@
+<script>
+    function submitFormWithLocation() {
+        getLocation();
+        return false; // フォームの通常の送信をキャンセルする
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function showPosition(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+
+        // フォームのhidden input要素に位置情報を設定する
+        document.getElementById('latitude').value = latitude;
+        document.getElementById('longitude').value = longitude;
+
+        // フォームを送信する
+        document.getElementById('myForm').submit();
+    }
+</script>
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -8,7 +35,7 @@
     <div class="max-w-7xl mx-auto mt-10 sm:px-6 lg:px-8">
         <div class="my-4">
             <div class="bg-white shadow p-6 rounded-lg">
-                <form action="{{ route('post.store') }}" method="post" enctype="multipart/form-data">
+                <form id="myForm" action="{{ route('post.store') }}" method="post" enctype="multipart/form-data" onsubmit="return submitFormWithLocation()">
                     @csrf
                     <div class="mb-4">
                         <label for="title" class="block text-gray-700 text-sm font-bold mb-2">タイトル</label>
@@ -22,6 +49,8 @@
                         <label for="image" class="block text-gray-700 text-sm font-bold mb-2">画像</label>
                         <input type="file" name="image">
                     </div>
+                    <input type="hidden" id="latitude" name="latitude">
+                    <input type="hidden" id="longitude" name="longitude">
                     <div class="flex justify-end">
                         <button type="submit" class="py-2 px-4 btn btn-primary">投稿する</button>
                         <a href="{{ route('post.index') }}" class="py-2 px-4 ml-4 btn btn-secondary">キャンセル</a>
