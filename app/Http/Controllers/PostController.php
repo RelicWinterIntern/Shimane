@@ -34,7 +34,7 @@ class PostController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->get();
         $isNear = true;
-        return view('post.index', compact('posts', 'isNear'));
+        return redirect()->route('post.index')->with(compact('posts', 'isNear'));
     }
 
     public function create()
