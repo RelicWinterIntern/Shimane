@@ -15,10 +15,10 @@
                             @method('PATCH')
 
                             <div class="form-group row">
-                                <label for="title" class="col-md-4 col-form-label text-md-right">{{ __('タイトル') }}</label>
+                                <label for="title" class="col-md-4 col-form-label font-bold text-md-right text-danger">{{ __('タイトル') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title', $post->title) }}" required autocomplete="title" autofocus>
+                                    <input id="title" placeholder="話の題名" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title', $post->title) }}" required autocomplete="title" autofocus>
 
                                     @error('title')
                                         <span class="invalid-feedback" role="alert">
@@ -29,10 +29,10 @@
                             </div>
 
                             <div class="form-group row my-4">
-                                <label for="body" class="col-md-4 col-form-label text-md-right">{{ __('本文') }}</label>
+                                <label for="body" class="col-md-4 col-form-label font-bold text-md-right text-danger">{{ __('本文') }}</label>
 
                                 <div class="col-md-6">
-                                    <textarea id="body" class="form-control @error('body') is-invalid @enderror" name="body" required>{{ old('body', $post->body) }}</textarea>
+                                    <textarea id="body" placeholder="最近の出来事を呟こう" class="form-control @error('body') is-invalid @enderror" name="body" required>{{ old('body', $post->body) }}</textarea>
 
                                     @error('body')
                                         <span class="invalid-feedback" role="alert">
@@ -43,7 +43,7 @@
                             </div>
 
                             <div class="form-group row my-4">
-                                <label for="body" class="col-md-4 col-form-label text-md-right">{{ __('画像') }}</label>
+                                <label for="body" class="col-md-4 col-form-label font-bold text-md-right">{{ __('画像') }}</label>
 
                                 <div class="col-md-6">
                                 <input type="file" name="image">
@@ -55,7 +55,7 @@
                                     @enderror
                                 </div>
                             </div>
-
+                            <label for="title" class="block text-gray-700 text-sm font-bold mb-2 text-danger">入力必須</label>
                             <div class="form-group row mb-0">
                                 <div class="col-md-8 offset-md-4">
                                     <button type="submit" class="btn btn-primary">
