@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/post/index', [PostController::class, 'index'])->name('post.index');
+    Route::get('/post/index/{posts?}', [PostController::class, 'index'])->name('post.index');
     Route::get('/post/create/{id?}', [PostController::class, 'create'])->name('post.create');
     Route::post('/post/store', [PostController::class, 'store'])->name('post.store');
     Route::get('/post/{id}', [PostController::class, 'edit'])->name('post.edit');
@@ -46,7 +46,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/post/near', [PostController::class, 'near'])->name('post.near');
 });
-
 
 require __DIR__.'/auth.php';
 
