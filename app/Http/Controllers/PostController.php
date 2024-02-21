@@ -30,6 +30,10 @@ class PostController extends Controller
         $post = new Post();
         $post->title = $validatedData['title'];
         $post->body = $validatedData['body'];
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+            $post->image = $imagePath;
+        }
         $post->user_id = Auth::id();
         $post->save();
 

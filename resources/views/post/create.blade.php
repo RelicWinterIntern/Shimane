@@ -35,7 +35,7 @@
     <div class="max-w-7xl mx-auto mt-10 sm:px-6 lg:px-8">
         <div class="my-4">
             <div class="bg-white shadow p-6 rounded-lg">
-                <form id="myForm" action="{{ route('post.store') }}" method="post" onsubmit="return submitFormWithLocation()">
+                <form id="myForm" action="{{ route('post.store') }}" method="post" enctype="multipart/form-data" onsubmit="return submitFormWithLocation()">
                     @csrf
                     <div class="mb-4">
                         <label for="title" class="block text-gray-700 text-sm font-bold mb-2">タイトル</label>
@@ -44,6 +44,10 @@
                     <div class="mb-4">
                         <label for="body" class="block text-gray-700 text-sm font-bold mb-2">本文</label>
                         <textarea name="body" id="body" rows="6" class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="image" class="block text-gray-700 text-sm font-bold mb-2">画像</label>
+                        <input type="file" name="image">
                     </div>
                     <input type="hidden" id="latitude" name="latitude">
                     <input type="hidden" id="longitude" name="longitude">
