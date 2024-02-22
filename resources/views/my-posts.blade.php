@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('自分の投稿一覧') }}
+            {{ __('自分のGive・Again') }}
         </h2>
     </x-slot>
 
     <div class="max-w-7xl mx-auto mt-10 sm:px-6 lg:px-8">
         <div class="my-4">
             <a href="{{ route('post.create') }}" class="btn btn-primary" role="button">
-                {{ __('新しい投稿') }}
+                {{ __('New Give') }}
             </a>
         </div>
 
@@ -20,8 +20,29 @@
                         <p class="text-gray-1000 mt-4">{!! nl2br($post->makeLink(e($post->body))) !!}</p>
                         <p class="text-gray-800">{{ $post->updated_at }}</p>
                         @if ($post->image)
-                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
+                            <img src="{{ asset($post->image) }}" alt="{{ $post->title }}" width="300px">
                         @endif
+
+                        @if($post->getRefer())
+                            <div class="mb-6 bg-white border rounded-lg p-4">
+                                @php 
+                                $refer = $post->getRefer();
+                                @endphp
+                                <h3 class="text-lg font-bold mb-2 border-bottom">{{ $refer->title }}</h3>
+                                <p class="text-gray-1000 mt-4">{!! nl2br($post->makeLink(e($refer->body))) !!}</p>
+                                @if ($refer->image)
+                                    <img src="{{ asset($refer->image) }}" alt="{{ $post->title }}" width="300px">
+                                @endif
+                                <div class="flex justify-between mt-8">
+                                    <p class="text-gray-600">
+                                        {{ $refer->user->name }}
+                                    </p>
+                                    <p class="text-gray-600">Like {{ $refer->likes->count() }}</p>
+                                    <p class="text-gray-600">{{ $refer->updated_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="mt-4 flex">
                             <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="btn btn-primary mr-2"
                                 role="button">
@@ -40,7 +61,7 @@
             </div>
         @else
             <div class="flex justify-center items-center h-full">
-                <p class="text-lg text-gray-600">投稿はありません。</p>
+                <p class="text-lg text-gray-600">Giveはありません。</p>
             </div>
         @endif
     </div>

@@ -11,10 +11,16 @@ use DB;
 class PostController extends Controller
 {
     public function index(Request $request)
-    {
-        $posts = Post::orderBy('updated_at', 'desc')->get();
-        $isNear = false;
-        return view('post.index', compact('posts', 'isNear'));
+    {   
+        if (session()->has('posts')) {
+            $posts = session('posts');
+            $isNear = true;
+            return view('post.index', compact('posts', 'isNear'));
+        } else {
+            $posts = Post::orderBy('updated_at', 'desc')->get();
+            $isNear = false;
+            return view('post.index', compact('posts', 'isNear'));
+        }
     }
 
     // https://qiita.com/takedomin/items/12e206d2a2ba285cee7c
@@ -34,12 +40,17 @@ class PostController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->get();
         $isNear = true;
-        return view('post.index', compact('posts', 'isNear'));
+        return redirect()->route('post.index')->with('posts', $posts);
     }
 
-    public function create()
-    {
-        return view('post.create');
+    public function create($id=null)
+    {  
+        if (is_null($id)) {
+            return view('post.create');
+        } else {
+            $original_post = Post::findOrFail($id);
+            return view('post.create', compact('original_post'));
+        }
     }
 
     public function store(Request $request)
@@ -52,6 +63,10 @@ class PostController extends Controller
         ]);
 
         $post = new Post();
+
+        if ($request->refer) {
+            $post->refer = $request->refer;
+        }
         $post->title = $validatedData['title'];
         $post->body = $validatedData['body'];
 
@@ -78,7 +93,7 @@ class PostController extends Controller
         $post->longitude = $validatedData['longitude'];
         $post->save();
 
-        return redirect()->route('post.index')->with('success', '投稿が作成されました');
+        return redirect()->route('post.index')->with('success', 'Giveが作成されました');
     }
 
     public function myPosts()
@@ -105,7 +120,7 @@ class PostController extends Controller
         $post->body = $validatedData['body'];
         $post->save();
 
-        return redirect()->route('myposts')->with('success', '投稿が更新されました');
+        return redirect()->route('myposts')->with('success', 'Giveしました');
     }
 
     public function destroy($id)
@@ -113,7 +128,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->delete();
 
-        return redirect()->route('myposts')->with('success', '投稿が削除されました');
+        return redirect()->route('myposts')->with('success', 'Giveを削除しました');
     }
 
     public function __construct()
@@ -128,7 +143,7 @@ class PostController extends Controller
         'user_id' => Auth::id(),
         ]);
 
-        session()->flash('success', '投稿にいいねされました');
+        session()->flash('success', '投稿にLikeしました');
 
         return redirect()->back();
     }
@@ -139,7 +154,7 @@ class PostController extends Controller
         $like = Like::where('post_id', $id)->where('user_id', Auth::id())->first();
         $like->delete();
 
-        session()->flash('success', '投稿にいいねが消されました');
+        session()->flash('success', '投稿のlikeを取り消しました');
 
         return redirect()->back();
     }
