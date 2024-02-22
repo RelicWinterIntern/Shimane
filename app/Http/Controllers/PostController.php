@@ -78,7 +78,7 @@ class PostController extends Controller
         $post->longitude = $validatedData['longitude'];
         $post->save();
 
-        return redirect()->route('post.index')->with('success', '投稿が作成されました');
+        return redirect()->route('post.index')->with('success', 'Giveが作成されました');
     }
 
     public function myPosts()
@@ -105,7 +105,7 @@ class PostController extends Controller
         $post->body = $validatedData['body'];
         $post->save();
 
-        return redirect()->route('myposts')->with('success', '投稿が更新されました');
+        return redirect()->route('myposts')->with('success', 'Giveしました');
     }
 
     public function destroy($id)
@@ -113,7 +113,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->delete();
 
-        return redirect()->route('myposts')->with('success', '投稿が削除されました');
+        return redirect()->route('myposts')->with('success', 'Giveを削除しました');
     }
 
     public function __construct()
@@ -128,7 +128,7 @@ class PostController extends Controller
         'user_id' => Auth::id(),
         ]);
 
-        session()->flash('success', '投稿にいいねされました');
+        session()->flash('success', '投稿にLikeしました');
 
         return redirect()->back();
     }
@@ -139,7 +139,7 @@ class PostController extends Controller
         $like = Like::where('post_id', $id)->where('user_id', Auth::id())->first();
         $like->delete();
 
-        session()->flash('success', '投稿にいいねが消されました');
+        session()->flash('success', '投稿のlikeを取り消しました');
 
         return redirect()->back();
     }
