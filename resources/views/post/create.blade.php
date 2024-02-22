@@ -29,11 +29,11 @@
     <x-slot name="header">
         @if(isset($original_post))
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('再投稿') }}
+            {{ __('Again') }}
         </h2>
         @else
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('新規投稿') }}
+            {{ __('New Give') }}
         </h2>
         @endif
     </x-slot>
@@ -64,7 +64,7 @@
                     <input type="hidden" id="latitude" name="latitude">
                     <input type="hidden" id="longitude" name="longitude">
                     <div class="flex justify-end">
-                        <button type="submit" class="py-2 px-4 btn btn-primary">再投稿する</button>
+                        <button type="submit" class="py-2 px-4 btn btn-primary">Again</button>
                         <a href="{{ route('post.index') }}" class="py-2 px-4 ml-4 btn btn-secondary">キャンセル</a>
                     </div>
                     @else
@@ -83,7 +83,7 @@
                     <input type="hidden" id="latitude" name="latitude">
                     <input type="hidden" id="longitude" name="longitude">
                     <div class="flex justify-end">
-                        <button type="submit" class="py-2 px-4 btn btn-primary">投稿する</button>
+                        <button type="submit" class="py-2 px-4 btn btn-primary">Give</button>
                         <a href="{{ route('post.index') }}" class="py-2 px-4 ml-4 btn btn-secondary">キャンセル</a>
                     </div>
                     @endif
