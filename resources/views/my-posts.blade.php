@@ -20,7 +20,7 @@
                         <p class="text-gray-1000 mt-4">{!! nl2br($post->makeLink(e($post->body))) !!}</p>
                         <p class="text-gray-800">{{ $post->updated_at }}</p>
                         @if ($post->image)
-                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
+                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" width="300px">
                         @endif
                         <div class="mt-4 flex">
                             <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="btn btn-primary mr-2"
