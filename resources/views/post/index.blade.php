@@ -66,7 +66,7 @@
                             <h3 class="text-lg font-bold mb-2 border-bottom">{{ $post->title }}</h3>
                             <p class="text-gray-1000 mt-4">{!! nl2br($post->makeLink(e($post->body))) !!}</p>
                             @if ($post->image)
-                                <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" width="300px">
+                                <img src="{{ asset($post->image) }}" alt="{{ $post->title }}" width="300px">
                             @endif
 
                             @if($post->getRefer())
