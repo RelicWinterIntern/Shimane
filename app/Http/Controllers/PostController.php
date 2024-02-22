@@ -25,17 +25,17 @@ class PostController extends Controller
 
     // https://qiita.com/takedomin/items/12e206d2a2ba285cee7c
     public function near(Request $request)
-    {   
+    {
         $validatedData = $request->validate([
             'latitude' => 'required',
             'longitude' => 'required',
         ]);
         $latitude = $validatedData['latitude'];
         $longitude = $validatedData['longitude'];
-        $posts = Post::select('*', 
-        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
+        $posts = Post::select('*',
+        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.'))
                 + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) as distance'))
-                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
+                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.'))
                 + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) < 50')
                 ->orderBy('updated_at', 'desc')
                 ->get();
@@ -69,6 +69,7 @@ class PostController extends Controller
         }
         $post->title = $validatedData['title'];
         $post->body = $validatedData['body'];
+
         if ($request->hasFile('image')) {
             // フォームでリクエストされた画像を取得
             $img = $request->file('image');
@@ -147,7 +148,7 @@ class PostController extends Controller
         return redirect()->back();
     }
 
-    
+
     public function unlike($id)
     {
         $like = Like::where('post_id', $id)->where('user_id', Auth::id())->first();
