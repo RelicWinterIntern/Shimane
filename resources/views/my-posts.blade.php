@@ -22,6 +22,27 @@
                         @if ($post->image)
                             <img src="{{ asset($post->image) }}" alt="{{ $post->title }}" width="300px">
                         @endif
+
+                        @if($post->getRefer())
+                            <div class="mb-6 bg-white border rounded-lg p-4">
+                                @php 
+                                $refer = $post->getRefer();
+                                @endphp
+                                <h3 class="text-lg font-bold mb-2 border-bottom">{{ $refer->title }}</h3>
+                                <p class="text-gray-1000 mt-4">{!! nl2br($post->makeLink(e($refer->body))) !!}</p>
+                                @if ($refer->image)
+                                    <img src="{{ asset($refer->image) }}" alt="{{ $post->title }}" width="300px">
+                                @endif
+                                <div class="flex justify-between mt-8">
+                                    <p class="text-gray-600">
+                                        {{ $refer->user->name }}
+                                    </p>
+                                    <p class="text-gray-600">Like {{ $refer->likes->count() }}</p>
+                                    <p class="text-gray-600">{{ $refer->updated_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="mt-4 flex">
                             <a href="{{ route('post.edit', ['id' => $post->id]) }}" class="btn btn-primary mr-2"
                                 role="button">
