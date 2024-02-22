@@ -11,30 +11,36 @@ use DB;
 class PostController extends Controller
 {
     public function index(Request $request)
-    {
-        $posts = Post::orderBy('updated_at', 'desc')->get();
-        $isNear = false;
-        return view('post.index', compact('posts', 'isNear'));
+    {   
+        if (session()->has('posts')) {
+            $posts = session('posts');
+            $isNear = true;
+            return view('post.index', compact('posts', 'isNear'));
+        } else {
+            $posts = Post::orderBy('updated_at', 'desc')->get();
+            $isNear = false;
+            return view('post.index', compact('posts', 'isNear'));
+        }
     }
 
     // https://qiita.com/takedomin/items/12e206d2a2ba285cee7c
     public function near(Request $request)
-    {
+    {   
         $validatedData = $request->validate([
             'latitude' => 'required',
             'longitude' => 'required',
         ]);
         $latitude = $validatedData['latitude'];
         $longitude = $validatedData['longitude'];
-        $posts = Post::select('*',
-        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.'))
+        $posts = Post::select('*', 
+        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
                 + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) as distance'))
-                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.'))
+                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
                 + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) < 50')
                 ->orderBy('updated_at', 'desc')
                 ->get();
         $isNear = true;
-        return view('post.index', compact('posts', 'isNear'));
+        return redirect()->route('post.index')->with('posts', $posts);
     }
 
     public function create()
