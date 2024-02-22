@@ -70,8 +70,22 @@ class PostController extends Controller
         $post->title = $validatedData['title'];
         $post->body = $validatedData['body'];
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
-            $post->image = $imagePath;
+            // フォームでリクエストされた画像を取得
+            $img = $request->file('image');
+
+            // アップロードされたファイル名を取得
+            $file_name = $request->file('image')->getClientOriginalName();
+
+            // storage > public > img 配下に画像が一時的に保存される
+            $dir = 'img';
+            $img->storeAs('/' . $dir, $file_name);
+            $imgPath = '/' . $dir . '/' . $file_name;
+
+            // store処理が実行できたらDBに保存処理を実行
+            if ($imgPath) {
+                // DBにPathを登録する処理
+                $post->image = $imgPath;
+            }
         }
         $post->user_id = Auth::id();
         $post->latitude = $validatedData['latitude'];
