@@ -84,7 +84,7 @@ class PostController extends Controller
             // store処理が実行できたらDBに保存処理を実行
             if ($imgPath) {
                 // DBにPathを登録する処理
-                $post->image = $imagePath;
+                $post->image = $imgPath;
             }
         }
         $post->user_id = Auth::id();
