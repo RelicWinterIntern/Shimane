@@ -13,14 +13,28 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/sass/app.scss', 'resources/js/app.js'])
+        <style>
+            #back1 {
+                width: 100%;
+                background-image: url(/img/back.jpg);
+                background-position: center center; 
+                background-repeat: no-repeat;  
+                background-attachment: fixed; 
+                background-size: cover;
+                
+            }
+            #back2 {
+                background-color: red;
+            }
+        </style>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-100" id="back1">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow">
+                <header class="bg-white shadow" >
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
