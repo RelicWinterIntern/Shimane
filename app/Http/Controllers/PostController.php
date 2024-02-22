@@ -11,46 +11,35 @@ use DB;
 class PostController extends Controller
 {
     public function index(Request $request)
-    {   
-        if (session()->has('posts')) {
-            $posts = session('posts');
-            $isNear = true;
-            return view('post.index', compact('posts', 'isNear'));
-        } else {
-            $posts = Post::orderBy('updated_at', 'desc')->get();
-            $isNear = false;
-            return view('post.index', compact('posts', 'isNear'));
-        }
+    {
+        $posts = Post::orderBy('updated_at', 'desc')->get();
+        $isNear = false;
+        return view('post.index', compact('posts', 'isNear'));
     }
 
     // https://qiita.com/takedomin/items/12e206d2a2ba285cee7c
     public function near(Request $request)
-    {   
+    {
         $validatedData = $request->validate([
             'latitude' => 'required',
             'longitude' => 'required',
         ]);
         $latitude = $validatedData['latitude'];
         $longitude = $validatedData['longitude'];
-        $posts = Post::select('*', 
-        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
+        $posts = Post::select('*',
+        DB::raw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.'))
                 + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) as distance'))
-                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.')) 
+                ->whereRaw('6370 * ACOS(COS(RADIANS('.$latitude.')) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS('.$longitude.'))
                 + SIN(RADIANS('.$latitude.')) * SIN(RADIANS(latitude))) < 50')
                 ->orderBy('updated_at', 'desc')
                 ->get();
         $isNear = true;
-        return redirect()->route('post.index')->with('posts', $posts);
+        return view('post.index', compact('posts', 'isNear'));
     }
 
-    public function create($id=null)
-    {  
-        if (is_null($id)) {
-            return view('post.create');
-        } else {
-            $original_post = Post::findOrFail($id);
-            return view('post.create', compact('original_post'));
-        }
+    public function create()
+    {
+        return view('post.create');
     }
 
     public function store(Request $request)
@@ -63,22 +52,33 @@ class PostController extends Controller
         ]);
 
         $post = new Post();
-
-        if ($request->refer) {
-            $post->refer = $request->refer;
-        }
         $post->title = $validatedData['title'];
         $post->body = $validatedData['body'];
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
-            $post->image = $imagePath;
+            // フォームでリクエストされた画像を取得
+            $img = $request->file('image');
+
+            // アップロードされたファイル名を取得
+            $file_name = $request->file('image')->getClientOriginalName();
+
+            // storage > public > img 配下に画像が一時的に保存される
+            $dir = 'img';
+            $img->storeAs('/' . $dir, $file_name);
+            $imgPath = '/' . $dir . '/' . $file_name;
+
+            // store処理が実行できたらDBに保存処理を実行
+            if ($imgPath) {
+                // DBにPathを登録する処理
+                $post->image = $imagePath;
+            }
         }
         $post->user_id = Auth::id();
         $post->latitude = $validatedData['latitude'];
         $post->longitude = $validatedData['longitude'];
         $post->save();
 
-        return redirect()->route('post.index')->with('success', 'Giveが作成されました');
+        return redirect()->route('post.index')->with('success', '投稿が作成されました');
     }
 
     public function myPosts()
@@ -105,7 +105,7 @@ class PostController extends Controller
         $post->body = $validatedData['body'];
         $post->save();
 
-        return redirect()->route('myposts')->with('success', 'Giveしました');
+        return redirect()->route('myposts')->with('success', '投稿が更新されました');
     }
 
     public function destroy($id)
@@ -113,7 +113,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->delete();
 
-        return redirect()->route('myposts')->with('success', 'Giveを削除しました');
+        return redirect()->route('myposts')->with('success', '投稿が削除されました');
     }
 
     public function __construct()
@@ -128,18 +128,18 @@ class PostController extends Controller
         'user_id' => Auth::id(),
         ]);
 
-        session()->flash('success', '投稿にLikeしました');
+        session()->flash('success', '投稿にいいねされました');
 
         return redirect()->back();
     }
 
-    
+
     public function unlike($id)
     {
         $like = Like::where('post_id', $id)->where('user_id', Auth::id())->first();
         $like->delete();
 
-        session()->flash('success', '投稿のlikeを取り消しました');
+        session()->flash('success', '投稿にいいねが消されました');
 
         return redirect()->back();
     }
